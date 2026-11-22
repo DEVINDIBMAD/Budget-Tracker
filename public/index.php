@@ -9,11 +9,20 @@ if (!in_array($filterType, ['all', 'income', 'expense'], true)) {
     $filterType = 'all';
 }
 
-$addedNotice = isset($_GET['added']) && $_GET['added'] === '1';
+$addedNotice   = isset($_GET['added']) && $_GET['added'] === '1';
+$updatedNotice = isset($_GET['updated']) && $_GET['updated'] === '1';
+$deletedNotice = isset($_GET['deleted']) && $_GET['deleted'] === '1';
+$errorCode     = (string) ($_GET['error'] ?? '');
+
+$errorMessages = [
+        'invalid_id' => 'Invalid transaction ID.',
+        'not_found'  => 'Transaction could not be found.',
+];
+$errorNotice = $errorMessages[$errorCode] ?? null;
 
 // Overall totals across all transactions
 $summaryStmt = $pdo->query(
-    "SELECT
+        "SELECT
         COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS total_income,
         COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS total_expense
      FROM transactions"
@@ -26,7 +35,7 @@ $balance = $totalIncome - $totalExpense;
 // Filtered transaction list using a prepared statement
 if ($filterType === 'all') {
     $txnStmt = $pdo->prepare(
-        'SELECT t.id, t.title, t.amount, t.type, t.txn_date, c.name AS category_name
+            'SELECT t.id, t.title, t.amount, t.type, t.txn_date, c.name AS category_name
          FROM transactions t
          LEFT JOIN categories c ON t.category_id = c.id
          ORDER BY t.txn_date DESC, t.id DESC'
@@ -34,7 +43,7 @@ if ($filterType === 'all') {
     $txnStmt->execute();
 } else {
     $txnStmt = $pdo->prepare(
-        'SELECT t.id, t.title, t.amount, t.type, t.txn_date, c.name AS category_name
+            'SELECT t.id, t.title, t.amount, t.type, t.txn_date, c.name AS category_name
          FROM transactions t
          LEFT JOIN categories c ON t.category_id = c.id
          WHERE t.type = :type
@@ -52,7 +61,7 @@ $transactions = $txnStmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 820px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+        body { font-family: Arial, sans-serif; max-width: 880px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
         .btn { display: inline-block; padding: 0.55rem 1rem; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 4px; }
         .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
@@ -67,6 +76,10 @@ $transactions = $txnStmt->fetchAll();
         .income { color: #15803d; font-weight: bold; }
         .expense { color: #b91c1c; font-weight: bold; }
         .alert { background: #dcfce7; border: 1px solid #22c55e; color: #166534; padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; }
+        .alert-error { background: #fee2e2; border: 1px solid #ef4444; color: #991b1b; padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; }
+        .actions { display: flex; align-items: center; gap: 0.6rem; }
+        .edit-link { color: #1d4ed8; text-decoration: none; font-size: 0.9rem; }
+        .delete-btn { background: #dc2626; color: #fff; border: none; padding: 0.28rem 0.6rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -77,6 +90,14 @@ $transactions = $txnStmt->fetchAll();
 
 <?php if ($addedNotice): ?>
     <div class="alert">Transaction saved successfully.</div>
+<?php elseif ($updatedNotice): ?>
+    <div class="alert">Transaction updated successfully.</div>
+<?php elseif ($deletedNotice): ?>
+    <div class="alert">Transaction deleted successfully.</div>
+<?php endif; ?>
+
+<?php if ($errorNotice !== null): ?>
+    <div class="alert-error"><?= htmlspecialchars($errorNotice) ?></div>
 <?php endif; ?>
 
 <div class="cards">
@@ -108,12 +129,13 @@ $transactions = $txnStmt->fetchAll();
         <th>Category</th>
         <th>Type</th>
         <th>Amount</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <?php if (empty($transactions)): ?>
         <tr>
-            <td colspan="5">No transactions found for this filter.</td>
+            <td colspan="6">No transactions found for this filter.</td>
         </tr>
     <?php else: ?>
         <?php foreach ($transactions as $txn): ?>
@@ -123,6 +145,15 @@ $transactions = $txnStmt->fetchAll();
                 <td><?= htmlspecialchars($txn['category_name'] ?? 'Uncategorized') ?></td>
                 <td class="<?= htmlspecialchars($txn['type']) ?>"><?= htmlspecialchars(ucfirst($txn['type'])) ?></td>
                 <td class="<?= htmlspecialchars($txn['type']) ?>"><?= number_format((float) $txn['amount'], 2) ?></td>
+                <td>
+                    <div class="actions">
+                        <a class="edit-link" href="edit.php?id=<?= (int) $txn['id'] ?>">Edit</a>
+                        <form method="post" action="delete.php" onsubmit="return confirm('Delete this transaction?');">
+                            <input type="hidden" name="id" value="<?= (int) $txn['id'] ?>">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </div>
+                </td>
             </tr>
         <?php endforeach; ?>
     <?php endif; ?>

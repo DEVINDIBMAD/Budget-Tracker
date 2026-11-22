@@ -1,0 +1,433 @@
+:root {
+    --bg-page: #f6f7f9;
+    --bg-surface: #ffffff;
+    --bg-subtle: #f0f2f5;
+    --text-primary: #1f2937;
+    --text-secondary: #5c6675;
+    --text-muted: #7c8798;
+    --border-color: #e2e6ec;
+    --accent: #3b6e8c;
+    --accent-hover: #2f5972;
+    --accent-soft: #eaf2f7;
+    --income: #2d7a56;
+    --income-bg: #eaf6f0;
+    --expense: #b84a39;
+    --expense-bg: #fdf0ed;
+    --danger: #b84a39;
+    --danger-hover: #99392a;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 2.25rem 1.25rem 3.5rem;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 0.96rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-page);
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.container--narrow {
+    max-width: 620px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.65rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+h2 {
+    margin: 2rem 0 0.85rem;
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+a:hover {
+    color: var(--accent-hover);
+}
+
+/* Top bar & navigation */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.nav,
+.nav-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.nav {
+    margin-bottom: 1.25rem;
+}
+
+.nav a:not(.btn):not(.btn-secondary) {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    padding: 0.25rem 0.4rem;
+    border-radius: var(--radius-sm);
+}
+
+.nav a:not(.btn):not(.btn-secondary):hover {
+    color: var(--text-primary);
+    background-color: var(--bg-subtle);
+}
+
+/* Buttons */
+.btn,
+.btn-secondary,
+button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.08s ease;
+}
+
+.btn,
+button[type="submit"]:not(.btn-danger):not(.delete-btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.58rem 1.05rem;
+    background-color: var(--accent);
+    color: #ffffff;
+    border: 1px solid var(--accent);
+}
+
+.btn:hover,
+button[type="submit"]:not(.btn-danger):not(.delete-btn):hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: #ffffff;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.56rem 0.95rem;
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-subtle);
+    border-color: #cfd6e0;
+    color: var(--text-primary);
+}
+
+.delete-btn,
+.btn-danger {
+    padding: 0.32rem 0.68rem;
+    font-size: 0.82rem;
+    background-color: transparent;
+    color: var(--danger);
+    border: 1px solid #eccbc6;
+    border-radius: var(--radius-sm);
+}
+
+.delete-btn:hover,
+.btn-danger:hover {
+    background-color: var(--expense-bg);
+    border-color: var(--danger);
+    color: var(--danger-hover);
+}
+
+button:active,
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* Summary cards */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.15rem 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.card h2 {
+    margin: 0 0 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.card .value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Filter bar */
+.filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.filters label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.filters select,
+.filters input[type="month"] {
+    width: auto;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.filters a {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.filters a:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-subtle);
+}
+
+/* Forms & cards */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.box,
+.form-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.35rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.box h2,
+.form-card h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.field {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="month"],
+select {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    font-family: inherit;
+    font-size: 0.94rem;
+    color: var(--text-primary);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Tables */
+.table-wrap {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+}
+
+th {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    background-color: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-color);
+}
+
+td {
+    padding: 0.72rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid #edf0f4;
+    vertical-align: middle;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background-color: #fafbfc;
+}
+
+.actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.edit-link {
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--accent);
+    padding: 0.25rem 0.45rem;
+    border-radius: var(--radius-sm);
+}
+
+.edit-link:hover {
+    background-color: var(--accent-soft);
+}
+
+/* Status colors & alerts */
+.income,
+.ok {
+    color: var(--income);
+    font-weight: 600;
+}
+
+.expense,
+.over {
+    color: var(--expense);
+    font-weight: 600;
+}
+
+.alert {
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--income-bg);
+    border: 1px solid #bfe3d1;
+    color: var(--income);
+    font-size: 0.9rem;
+}
+
+.alert-error,
+.errors {
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--expense-bg);
+    border: 1px solid #f0c8c2;
+    color: var(--expense);
+    font-size: 0.9rem;
+}
+
+.errors ul {
+    margin: 0.25rem 0 0;
+    padding-left: 1.2rem;
+}
+
+/* Budget progress bar */
+.progress-track {
+    width: 100%;
+    height: 8px;
+    background-color: var(--bg-subtle);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #4b8b6b;
+    border-radius: 999px;
+    transition: width 0.25s ease;
+}
+
+.progress-fill.over {
+    background-color: var(--expense);
+}

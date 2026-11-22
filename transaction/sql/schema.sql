@@ -17,3 +17,13 @@ CREATE TABLE transactions (
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
+
+CREATE TABLE IF NOT EXISTS monthly_budgets (
+                                               id INT AUTO_INCREMENT PRIMARY KEY,
+                                               category_id INT NOT NULL,
+                                               budget_month CHAR(7) NOT NULL,
+    limit_amount DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_category_month (category_id, budget_month),
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+    );
